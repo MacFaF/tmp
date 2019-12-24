@@ -1,0 +1,75 @@
+#Install docker
+1.curl -fsSL https://get.docker.com -o get-docker.sh 
+2.sudo sh get-docker.sh
+3.sudo docker version
+4.sudo docker search debian:9
+5.sudo docker pull debian:9
+6.sudo docker run debian:9
+7.sudo docker images
+8.sudo docker ps -a
+#TO run command directly
+#9.docker run -it debian:9 cat /etc/passwd
+10.mkdir docker
+ cd docker
+    1.nano Dockerfile
+        FROM debian:9
+        RUN apt-get update
+        RUN apt-get install apache2 -y
+        #RUN echo "Welcome" > /var/www/html/index.html
+        CMD ["apache2ctl","-D","FOREGROUND"]
+    2.docker build -t web .
+    3.docker build -t websserver .
+	exit
+#Tuo run docker
+11.mkdir webserver1
+12.nano webserver1/index.html
+  server1
+13.mkdir webserver2
+14.nano webserver2/index.html
+   sever2
+15.docker run -v /home/shuhari/webserver1:/var/www/html -p 7777:80 -d --name server1 -it webserver
+or 9.docker run -v /root/webserver1:/var/www/html -p 7777:80 -d --name server1 -it webserver
+16.docker run -v /home/shuhari/webserver2:/var/www/html -p 8888:80 -d --name server2 -it webserver
+or 10.docker run -v /root/webserver1:/var/www/html -p 7777:80 -d --name server1 -it webserver
+17.sudo docker ps
+
+18.docker exec -it 5dc3762bad1d bash
+    root@5dc3762bad1d:/# rm /var/www/html/index.html
+
+    root@5dc3762bad1d:/# cd /var/www/html/
+    root@5dc3762bad1d:/var/www/html# ls -l
+    total 0
+    root@5dc3762bad1d:/var/www/html# mkdir abc
+    root@5dc3762bad1d:/var/www/html# cd abc/
+    root@5dc3762bad1d:/var/www/html/abc#
+    root@5dc3762bad1d:/var/www/html/abc# echo "docker Practicle"> file.txt
+    root@5dc3762bad1d:/var/www/html/abc# exit
+O/p : open browser enter docker ip:port number
+
+
+DNS:
+1.Install another debian
+2.nano /etc/apt/sources.list
+3.apt-get update
+4.nano /etc/hosts
+    add line: 192.168.1.40  server1.local
+    #192.168.1.40 - ip of docker
+5.ping server1.local
+6.apt-get install curl
+7.sudo apt-get install curl
+8.curl server1.local:8888
+
+or open browser ip address:port no
+EXTRA
+
+#to check whether package is is install in container of not
+1. apt-cache search apache2
+#To remove container
+sudo docker rm 'container name'
+#To stop container
+sudo docker stop 'container name'
+#To see the ip address
+sudo docker exec -it server1 ip a
+
+#To remove imagess
+sudo docker rmi 'container name'

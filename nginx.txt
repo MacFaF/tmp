@@ -1,0 +1,105 @@
+#Install docker
+1.curl -fsSL https://get.docker.com -o get-docker.sh 
+2.sudo sh get-docker.sh
+3.mkdir docker
+    1.nano Dockerfile	
+		FROM debian:9
+        	RUN apt-get update
+        	RUN apt-get install apache2 -y
+         	CMD ["apache2ctl","-D","FOREGROUND"]
+    2.docker build -t websserver .
+    3.docker images
+    4.cd
+5.mkdir webserver1
+6.nano webserver1/index.html
+  server1
+7.mkdir webserver2
+8.nano webserver2/index.html
+   sever2
+9.docker run -v /home/shuhari/webserver1:/var/www/html -p 7777:80 -d --name server1 -it webserver
+or 9.docker run -v /root/webserver1:/var/www/html -p 7777:80 -d --name server1 -it webserver
+10.docker run -v /home/shuhari/webserver2:/var/www/html -p 8888:80 -d --name server2 -it webserver
+or 10.docker run -v /root/webserver1:/var/www/html -p 7777:80 -d --name server1 -it webserver
+
+o/p => try to open ip of server:port no
+
+client:
+
+1.nano /etc/hosts
+	ip of server  server1.local
+	ip of server  server2.local
+
+o/p =>ping and curl name(server1.local and server2.local) of server
+
+3server:
+1.apt-get install nginx
+2.nano /etc/nginx/sites-enables/default
+	1.server {
+		listen 80;
+		server_name server1.local;
+		location /{
+			proxy_pass http://server ip:portno1;
+			}
+		}
+	2.server {
+		listen 80;
+		server_name server2.local;
+		location /{
+			proxy_pass http://server ip:portno2;
+			}
+		}
+3.systemctl restart nginx
+4.systemctl status nginx
+
+#client:
+
+try to ping/curl ip of server
+
+#server:reverse proxy
+
+1.nano /etc/nginx/sites-enables/default
+	1.server {
+		listen 80;
+		server_name server1.local;
+		location /{
+			proxy_pass http://dockerip;
+			}
+		}
+
+	2.server {
+		listen 80;
+		server_name server2.local;
+		location /{
+			proxy_pass http://dockerip;
+			}
+		}
+
+2.systemctl restart nginx.service
+#client:
+
+try to ping/curl ip of server
+
+
+
+
+
+
+#if not getting name then follow below commands
+
+#server : 
+1.sudo docker ps
+2.docker exec -it containerID of 1 bash
+    root@5dc3762bad1d:/# rm /var/www/html/index.html
+
+    root@5dc3762bad1d:/# cd /var/www/html/
+    root@5dc3762bad1d:/var/www/html# apt-get install nano 
+    root@5dc3762bad1d:/var/www/html# nano index.html
+					server1 
+2.docker exec -it containerID of 2 bash
+    root@5dc3762bad1d:/# rm /var/www/html/index.html
+
+    root@5dc3762bad1d:/# cd /var/www/html/
+    root@5dc3762bad1d:/var/www/html# apt-get install nano 
+    root@5dc3762bad1d:/var/www/html# nano index.html
+					server2
+
